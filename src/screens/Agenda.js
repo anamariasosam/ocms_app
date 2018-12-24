@@ -1,47 +1,32 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
+import calendar from '../locales/calendar'
 
-LocaleConfig.locales.es = {
-  monthNames: [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
-  ],
-  monthNamesShort: [
-    'Ene.',
-    'Feb.',
-    'Mar.',
-    'Abr.',
-    'May.',
-    'Jun.',
-    'Jul.',
-    'Ago.',
-    'Sept.',
-    'Oct.',
-    'Nov.',
-    'Dic.',
-  ],
-  dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-  dayNamesShort: ['Dom.', 'Lun.', 'Mar.', 'Mier.', 'Jue.', 'Vie.', 'Sab.'],
-}
-
+LocaleConfig.locales.es = calendar
 LocaleConfig.defaultLocale = 'es'
+
+const vacation = { key: 'vacation', color: 'red', selectedDotColor: 'blue' }
+const massage = { key: 'massage', color: 'green', selectedDotColor: 'blue' }
+const workout = { key: 'workout', color: 'green' }
 
 export default class AgendaScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      items: {},
+      items: {
+        '2018-12-23': [
+          {
+            name: 'Item for 2018-12-10',
+            selectedColor: 'red',
+          },
+        ],
+        '2018-12-24': [
+          {
+            name: 'Item for 2018-12-10',
+          },
+        ],
+      },
     }
   }
 
@@ -49,41 +34,15 @@ export default class AgendaScreen extends Component {
     return (
       <Agenda
         items={this.state.items}
-        loadItemsForMonth={this.loadItems.bind(this)}
-        selected={'2017-05-16'}
-        renderItem={this.renderItem.bind(this)}
+        selected={new Date()}
+        renderItem={this.renderItem}
         renderEmptyDate={this.renderEmptyDate.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}
+        minDate={'2018-12-10'}
+        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+        maxDate={'2019-02-28'}
       />
     )
-  }
-
-  loadItems(day) {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000
-        const strTime = this.timeToString(time)
-        if (!this.state.items[strTime]) {
-          this.state.items[strTime] = []
-          const numItems = Math.floor(Math.random() * 5)
-          for (let j = 0; j < numItems; j++) {
-            this.state.items[strTime].push({
-              name: 'Item for ' + strTime,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-            })
-          }
-        }
-      }
-      //console.log(this.state.items);
-      const newItems = {}
-      Object.keys(this.state.items).forEach(key => {
-        newItems[key] = this.state.items[key]
-      })
-      this.setState({
-        items: newItems,
-      })
-    }, 1000)
-    // console.log(`Load Items for ${day.year}-${day.month}`);
   }
 
   renderItem(item) {
@@ -97,18 +56,13 @@ export default class AgendaScreen extends Component {
   renderEmptyDate() {
     return (
       <View style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
+        <Text>No hay ningún evento programado</Text>
       </View>
     )
   }
 
   rowHasChanged(r1, r2) {
     return r1.name !== r2.name
-  }
-
-  timeToString(time) {
-    const date = new Date(time)
-    return date.toISOString().split('T')[0]
   }
 }
 
