@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
+import { Text } from 'native-base'
 import calendar from '../locales/calendar'
 
 LocaleConfig.locales.es = calendar
@@ -10,6 +11,8 @@ export default class AgendaScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      userId: null,
+      loading: true,
       items: {
         '2018-12-23': [
           {
@@ -23,6 +26,31 @@ export default class AgendaScreen extends Component {
           },
         ],
       },
+    }
+  }
+
+  async componentDidMount() {
+    await this.loadUserId()
+    this.loadEvents()
+  }
+
+  loadEvents() {
+    console.log('====================================')
+    console.log(this.state.userId)
+    console.log('====================================')
+  }
+
+  async loadUserId() {
+    try {
+      const userId = await AsyncStorage.getItem('user_id')
+      if (userId !== null) {
+        this.setState({
+          userId,
+          loading: false,
+        })
+      }
+    } catch (error) {
+      console.error('AsyncStorage Error: ' + error.message)
     }
   }
 

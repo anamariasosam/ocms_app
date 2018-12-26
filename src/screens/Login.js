@@ -1,48 +1,110 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
-import { Container, Button, Text, Content, Form, Item, Input, Label } from 'native-base'
+import { StyleSheet, AsyncStorage } from 'react-native'
+import { Button, Text, Content, Form, Item, Input, Label, Toast } from 'native-base'
+import axios from 'axios'
+import PACKAGE from '../../package.json'
+
+const API_URL = PACKAGE.config.url
 
 export default class Login extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      correo: '',
-      password: '',
+      correo: null,
+      password: null,
+      buttonText: 'Iniciar Sesión',
+      loading: false,
     }
 
-    this.loginUser = this.loginUser.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  loginUser() {
+  async saveItem(item, selectedValue) {
+    try {
+      await AsyncStorage.setItem(item, selectedValue)
+    } catch (error) {
+      console.error('AsyncStorage error: ' + error.message)
+    }
+  }
+
+  loginUser(data) {
     const { history } = this.props
-    history.push('/agenda')
+    axios
+      .post(`${API_URL}/auth/login`, data)
+      .then(response => {
+        const { token, usuario } = response.data
+
+        this.saveItem('user_token', token)
+        this.saveItem('user_id', usuario._id)
+
+        history.push('/agenda')
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          buttonText: 'Iniciar sesión',
+        })
+
+        Toast.show({
+          text: 'Verifica tus datos',
+          buttonText: 'Ok',
+          duration: 3000,
+          type: 'danger',
+        })
+      })
+  }
+
+  handleSubmit() {
+    const { correo, password } = this.state
+    if (correo && password) {
+      const data = {
+        correo,
+        password,
+      }
+
+      this.setState({
+        loading: true,
+        buttonText: 'Iniciando sesión...',
+      })
+      this.loginUser(data)
+    } else {
+      Toast.show({
+        text: 'Verifica tus datos',
+        buttonText: 'Ok',
+        duration: 3000,
+        type: 'danger',
+      })
+    }
   }
 
   render() {
-    const { container, button } = styles
-    const { correo, password } = this.state
+    const { button } = styles
+    const { correo, password, buttonText, loading } = this.state
     return (
-      <Container style={container}>
-        <Content padder>
-          <Form>
-            <Item floatingLabel>
-              <Label>Correo Electrónico</Label>
-              <Input onChangeText={correo => this.setState({ correo })} value={correo} />
-            </Item>
-            <Item floatingLabel>
-              <Label>Contraseña</Label>
-              <Input
-                onChangeText={password => this.setState({ password })}
-                value={password}
-                secureTextEntry
-              />
-            </Item>
-            <Button primary style={button} onPress={this.loginUser}>
-              <Text> Iniciar Sesión </Text>
-            </Button>
-          </Form>
-        </Content>
-      </Container>
+      <Content padder>
+        <Form>
+          <Item floatingLabel>
+            <Label>Correo Electrónico</Label>
+            <Input
+              onChangeText={correo => this.setState({ correo })}
+              value={correo}
+              autoFocus
+              keyboardType="email-address"
+            />
+          </Item>
+          <Item floatingLabel>
+            <Label>Contraseña</Label>
+            <Input
+              onChangeText={password => this.setState({ password })}
+              value={password}
+              secureTextEntry
+            />
+          </Item>
+          <Button primary style={button} onPress={this.handleSubmit} disabled={loading}>
+            <Text> {buttonText} </Text>
+          </Button>
+        </Form>
+      </Content>
     )
   }
 }
