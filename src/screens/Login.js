@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Text, ScrollView, StyleSheet, TextInput, Button, Alert } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { Container, Button, Text, Content, Form, Item, Input, Label } from 'native-base'
 
 export default class Login extends Component {
   constructor(props) {
@@ -8,46 +9,50 @@ export default class Login extends Component {
       correo: '',
       password: '',
     }
+
+    this.loginUser = this.loginUser.bind(this)
+  }
+
+  loginUser() {
+    const { history } = this.props
+    history.push('/agenda')
   }
 
   render() {
-    const { container, input } = styles
+    const { container, button } = styles
     const { correo, password } = this.state
     return (
-      <ScrollView style={container}>
-        <TextInput
-          style={input}
-          onChangeText={correo => this.setState({ correo })}
-          value={correo}
-          placeholder="Email"
-        />
-        <TextInput
-          style={input}
-          onChangeText={password => this.setState({ password })}
-          value={password}
-          placeholder="Contraseña"
-        />
-        <Button
-          onPress={() => {
-            Alert.alert(text)
-          }}
-          title="Continuar"
-        />
-      </ScrollView>
+      <Container style={container}>
+        <Content padder>
+          <Form>
+            <Item floatingLabel>
+              <Label>Correo Electrónico</Label>
+              <Input onChangeText={correo => this.setState({ correo })} value={correo} />
+            </Item>
+            <Item floatingLabel>
+              <Label>Contraseña</Label>
+              <Input
+                onChangeText={password => this.setState({ password })}
+                value={password}
+                secureTextEntry
+              />
+            </Item>
+            <Button primary style={button} onPress={this.loginUser}>
+              <Text> Iniciar Sesión </Text>
+            </Button>
+          </Form>
+        </Content>
+      </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
-    marginTop: 20,
+    padding: 20,
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    padding: 10,
+  button: {
+    alignSelf: 'center',
+    marginTop: 30,
   },
 })

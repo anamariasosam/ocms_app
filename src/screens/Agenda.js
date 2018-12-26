@@ -6,10 +6,6 @@ import calendar from '../locales/calendar'
 LocaleConfig.locales.es = calendar
 LocaleConfig.defaultLocale = 'es'
 
-const vacation = { key: 'vacation', color: 'red', selectedDotColor: 'blue' }
-const massage = { key: 'massage', color: 'green', selectedDotColor: 'blue' }
-const workout = { key: 'workout', color: 'green' }
-
 export default class AgendaScreen extends Component {
   constructor(props) {
     super(props)
