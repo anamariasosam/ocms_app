@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
-import { Text } from 'native-base'
+import { Card, CardItem, Text, Left, Body, Right } from 'native-base'
 import calendar from '../locales/calendar'
 
 LocaleConfig.locales.es = calendar
@@ -14,17 +14,23 @@ export default class AgendaScreen extends Component {
       userId: null,
       loading: true,
       items: {
-        '2018-12-23': [
-          {
-            name: 'Item for 2018-12-10',
-            selectedColor: 'red',
-          },
-        ],
         '2018-12-24': [
           {
-            name: 'Item for 2018-12-10',
+            nombre: 'Algebra y Trigonometría',
+            lugar: '4-202',
+            hora: '6:00 am',
+            tipo: 'Supletorios Parciales',
+          },
+          {
+            nombre: 'Algebra y Trigonometría',
+            lugar: '4-202',
+            hora: '6:00 am',
+            tipo: 'Supletorios Parciales',
           },
         ],
+        '2018-12-30': [],
+        '2018-12-31': [],
+        '2018-1-1': [],
       },
     }
   }
@@ -58,22 +64,33 @@ export default class AgendaScreen extends Component {
     return (
       <Agenda
         items={this.state.items}
-        selected={new Date()}
+        selected={'2018-12-24'}
         renderItem={this.renderItem}
         renderEmptyDate={this.renderEmptyDate.bind(this)}
         rowHasChanged={this.rowHasChanged.bind(this)}
-        minDate={'2018-12-10'}
+        //minDate={'2018-12-10'}
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        maxDate={'2019-02-28'}
+        //maxDate={'2019-02-28'}
       />
     )
   }
 
-  renderItem(item) {
+  renderItem(evento) {
     return (
-      <View style={[styles.item, { height: item.height }]}>
-        <Text>{item.name}</Text>
-      </View>
+      <Card>
+        <CardItem>
+          <Left>
+            <Body>
+              <Text>{evento.nombre}</Text>
+              <Text note>{evento.tipo}</Text>
+            </Body>
+          </Left>
+          <Right>
+            <Text>{evento.hora}</Text>
+            <Text note>{evento.lugar}</Text>
+          </Right>
+        </CardItem>
+      </Card>
     )
   }
 
@@ -91,7 +108,7 @@ export default class AgendaScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  item: {
+  evento: {
     backgroundColor: 'white',
     flex: 1,
     borderRadius: 5,
