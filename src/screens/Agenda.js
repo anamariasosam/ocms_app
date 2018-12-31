@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, AsyncStorage } from 'react-native'
+import { View, StyleSheet, AsyncStorage, ActivityIndicator } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
 import { Card, CardItem, Text, Left, Body, Right } from 'native-base'
+import axios from 'axios'
 import calendar from '../locales/calendar'
+import PACKAGE from '../../package.json'
+
+const API_URL = PACKAGE.config.url
 
 LocaleConfig.locales.es = calendar
 LocaleConfig.defaultLocale = 'es'
@@ -13,26 +17,12 @@ export default class AgendaScreen extends Component {
     this.state = {
       userId: null,
       loading: true,
-      items: {
-        '2018-12-24': [
-          {
-            nombre: 'Algebra y Trigonometría',
-            lugar: '4-202',
-            hora: '6:00 am',
-            tipo: 'Supletorios Parciales',
-          },
-          {
-            nombre: 'Algebra y Trigonometría',
-            lugar: '4-202',
-            hora: '6:00 am',
-            tipo: 'Supletorios Parciales',
-          },
-        ],
-        '2018-12-30': [],
-        '2018-12-31': [],
-        '2018-1-1': [],
-      },
+      eventos: {},
+      agenda: {},
     }
+
+    this.renderEmptyDate = this.renderEmptyDate.bind(this)
+    this.rowHasChanged = this.rowHasChanged.bind(this)
   }
 
   async componentDidMount() {
@@ -44,6 +34,16 @@ export default class AgendaScreen extends Component {
     console.log('====================================')
     console.log(this.state.userId)
     console.log('====================================')
+
+    axios.get(`${API_URL}/calendario/eventos?semestre=2018-2`).then(response => {
+      const { eventos, agenda } = response.data
+
+      this.setState({
+        loading: false,
+        eventos,
+        agenda,
+      })
+    })
   }
 
   async loadUserId() {
@@ -61,16 +61,20 @@ export default class AgendaScreen extends Component {
   }
 
   render() {
+    const { loading, eventos, agenda } = this.state
+    if (loading) {
+      return <ActivityIndicator size="large" />
+    }
+
     return (
       <Agenda
-        items={this.state.items}
-        selected={'2018-12-24'}
+        items={eventos}
         renderItem={this.renderItem}
-        renderEmptyDate={this.renderEmptyDate.bind(this)}
-        rowHasChanged={this.rowHasChanged.bind(this)}
-        //minDate={'2018-12-10'}
-        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        //maxDate={'2019-02-28'}
+        minDate={agenda.minDate}
+        maxDate={agenda.maxDate}
+        renderEmptyDate={this.renderEmptyDate}
+        rowHasChanged={this.rowHasChanged}
+        horizontal={true}
       />
     )
   }
