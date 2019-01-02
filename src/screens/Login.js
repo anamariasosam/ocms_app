@@ -32,10 +32,11 @@ export default class Login extends Component {
     axios
       .post(`${API_URL}/auth/login`, data)
       .then(response => {
-        const { token, usuario } = response.data
+        const { usuario } = response.data
 
-        this.saveItem('user_token', token)
         this.saveItem('user_id', usuario._id)
+        this.saveItem('user_name', usuario.nombre)
+        this.saveItem('user_type', usuario.rol)
 
         history.push('/agenda')
       })

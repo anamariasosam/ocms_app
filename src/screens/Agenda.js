@@ -16,6 +16,7 @@ export default class AgendaScreen extends Component {
     super(props)
     this.state = {
       userId: null,
+      userType: null,
       loading: true,
       eventos: {},
       agenda: {},
@@ -31,11 +32,15 @@ export default class AgendaScreen extends Component {
   }
 
   loadEvents() {
-    console.log('====================================')
-    console.log(this.state.userId)
-    console.log('====================================')
+    const { userId: usuario, userType: tipo } = this.state
 
-    axios.get(`${API_URL}/calendario/eventos?semestre=2018-2`).then(response => {
+    const params = {
+      usuario,
+      tipo,
+      semestre: '2019-1',
+    }
+
+    axios.get(`${API_URL}/calendario/eventos`, { params }).then(response => {
       const { eventos, agenda } = response.data
 
       this.setState({
@@ -49,9 +54,11 @@ export default class AgendaScreen extends Component {
   async loadUserId() {
     try {
       const userId = await AsyncStorage.getItem('user_id')
+      const userType = await AsyncStorage.getItem('user_type')
       if (userId !== null) {
         this.setState({
           userId,
+          userType,
           loading: false,
         })
       }
@@ -68,6 +75,7 @@ export default class AgendaScreen extends Component {
 
     return (
       <Agenda
+        selected={'2019-01-21'}
         items={eventos}
         renderItem={this.renderItem}
         minDate={agenda.minDate}
