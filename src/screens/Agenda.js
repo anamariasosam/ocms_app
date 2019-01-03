@@ -82,7 +82,6 @@ export default class AgendaScreen extends Component {
         maxDate={agenda.maxDate}
         renderEmptyDate={this.renderEmptyDate}
         rowHasChanged={this.rowHasChanged}
-        horizontal={true}
       />
     )
   }
@@ -109,7 +108,7 @@ export default class AgendaScreen extends Component {
   renderEmptyDate() {
     return (
       <View style={styles.emptyDate}>
-        <Text>No hay ningún evento programado</Text>
+        <Text />
       </View>
     )
   }

@@ -23,10 +23,11 @@ class App extends Component {
   async loadUsername() {
     try {
       const username = await AsyncStorage.getItem('user_name')
+      const type = await AsyncStorage.getItem('user_type')
 
       if (username !== null) {
         this.setState({
-          username,
+          username: `${type}: ${username}`,
         })
       }
     } catch (error) {
