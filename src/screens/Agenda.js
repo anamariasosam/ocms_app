@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, AsyncStorage, ActivityIndicator } from 'react-native'
 import { Agenda, LocaleConfig } from 'react-native-calendars'
-import { Card, CardItem, Text, Left, Body, Right } from 'native-base'
 import axios from 'axios'
 import calendar from '../locales/calendar'
 import PACKAGE from '../../package.json'
+import EventCard from '../components/EventCard'
 
 const API_URL = PACKAGE.config.url
 
 LocaleConfig.locales.es = calendar
 LocaleConfig.defaultLocale = 'es'
+
+const renderItem = evento => <EventCard {...evento} />
+
+const renderEmptyDate = () => <View style={{ height: 15, flex: 1, paddingTop: 30 }} />
+
+const rowHasChanged = (r1, r2) => r1.name !== r2.name
 
 export default class AgendaScreen extends Component {
   constructor(props) {
@@ -21,9 +27,6 @@ export default class AgendaScreen extends Component {
       eventos: {},
       agenda: {},
     }
-
-    this.renderEmptyDate = this.renderEmptyDate.bind(this)
-    this.rowHasChanged = this.rowHasChanged.bind(this)
   }
 
   async componentDidMount() {
@@ -77,59 +80,22 @@ export default class AgendaScreen extends Component {
       <Agenda
         selected={'2019-01-21'}
         items={eventos}
-        renderItem={this.renderItem}
+        renderItem={renderItem}
         minDate={agenda.minDate}
         maxDate={agenda.maxDate}
-        renderEmptyDate={this.renderEmptyDate}
-        rowHasChanged={this.rowHasChanged}
+        renderEmptyDate={renderEmptyDate}
+        rowHasChanged={rowHasChanged}
+        theme={{
+          agendaKnobColor: '#16343b',
+          monthTextColor: '#16343b',
+          textMonthFontWeight: 'bold',
+          selectedDayBackgroundColor: '#16343b',
+          dotColor: '#3a7e8e',
+          todayTextColor: '#3a7e8e',
+          agendaDayTextColor: '#3a7e8e',
+          agendaDayNumColor: '#3a7e8e',
+        }}
       />
     )
   }
-
-  renderItem(evento) {
-    return (
-      <Card>
-        <CardItem>
-          <Left>
-            <Body>
-              <Text>{evento.nombre}</Text>
-              <Text note>{evento.tipo}</Text>
-            </Body>
-          </Left>
-          <Right>
-            <Text>{evento.hora}</Text>
-            <Text note>{evento.lugar}</Text>
-          </Right>
-        </CardItem>
-      </Card>
-    )
-  }
-
-  renderEmptyDate() {
-    return (
-      <View style={styles.emptyDate}>
-        <Text />
-      </View>
-    )
-  }
-
-  rowHasChanged(r1, r2) {
-    return r1.name !== r2.name
-  }
 }
-
-const styles = StyleSheet.create({
-  evento: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17,
-  },
-  emptyDate: {
-    height: 15,
-    flex: 1,
-    paddingTop: 30,
-  },
-})

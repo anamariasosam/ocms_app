@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { StyleSheet, AsyncStorage } from 'react-native'
-import { Button, Text, Content, Form, Item, Input, Label, Toast } from 'native-base'
+import { StyleSheet, AsyncStorage, Image } from 'react-native'
+import { Button, Text, Content, Form, Item, Input, Label, Toast, Thumbnail } from 'native-base'
 import axios from 'axios'
 import PACKAGE from '../../package.json'
 
@@ -79,13 +79,14 @@ export default class Login extends Component {
   }
 
   render() {
-    const { button } = styles
+    const { button, userCard, mainColor } = styles
     const { correo, password, buttonText, loading } = this.state
     return (
       <Content padder>
+        <Image source={require('../images/userCard.png')} style={userCard} />
         <Form>
           <Item floatingLabel>
-            <Label>Correo Electrónico</Label>
+            <Label style={mainColor}>Correo Electrónico</Label>
             <Input
               onChangeText={correo => this.setState({ correo })}
               value={correo}
@@ -94,7 +95,7 @@ export default class Login extends Component {
             />
           </Item>
           <Item floatingLabel>
-            <Label>Contraseña</Label>
+            <Label style={mainColor}>Contraseña</Label>
             <Input
               onChangeText={password => this.setState({ password })}
               value={password}
@@ -117,5 +118,14 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: 'center',
     marginTop: 30,
+    backgroundColor: '#16343b',
+  },
+  userCard: {
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  mainColor: {
+    color: '#16343b',
   },
 })

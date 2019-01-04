@@ -1,54 +1,33 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { AsyncStorage } from 'react-native'
-import { NativeRouter, Route, Link } from 'react-router-native'
-import {
-  Header,
-  Body,
-  Title,
-  Container,
-  Root,
-  Subtitle,
-  Right,
-  Button,
-  Icon,
-  Left,
-} from 'native-base'
+import { Right, Icon, Button } from 'native-base'
 
-class LogOutButton extends Component {
-  constructor(props) {
-    super(props)
+const deleteItem = async item => {
+  await AsyncStorage.removeItem(item)
+}
 
-    this.logOut = this.logOut.bind(this)
+const logOut = async history => {
+  await deleteItem('user_id')
+  await deleteItem('user_name')
+  await deleteItem('user_type')
+
+  history.push('/login')
+}
+
+const LogOutButton = ({ location, history }) => {
+  const { pathname } = location
+
+  if (pathname !== '/login') {
+    return (
+      <Right style={{ flex: 0 }}>
+        <Button transparent onPress={() => logOut(history)}>
+          <Icon name="md-log-out" style={{ color: '#16343B' }} />
+        </Button>
+      </Right>
+    )
   }
 
-  async deleteItem(item) {
-    try {
-      await AsyncStorage.removeItem(item)
-    } catch (error) {
-      console.error('AsyncStorage error: ' + error.message)
-    }
-  }
-
-  async logOut() {
-    await this.deleteItem('user_id')
-    await this.deleteItem('user_name')
-    await this.deleteItem('user_type')
-  }
-
-  render() {
-    const { user } = this.props
-    if (user !== null) {
-      return (
-        <Right>
-          <Link onPress={this.logOut} to="/login">
-            <Icon name="md-log-out" />
-          </Link>
-        </Right>
-      )
-    } else {
-      return <Right />
-    }
-  }
+  return <Right style={{ flex: 0 }} />
 }
 
 export default LogOutButton
