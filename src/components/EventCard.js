@@ -11,7 +11,7 @@ const EventCard = ({ nombre, tipo, hora, lugar }) => (
         </Body>
       </Left>
       <Right>
-        <Text>{hora}</Text>
+        <Text style={{ color: '#16343b' }}>{hora}</Text>
         <Text note>{lugar}</Text>
       </Right>
     </CardItem>
