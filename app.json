@@ -2,23 +2,35 @@
   "expo": {
     "name": "AcademicSchedule",
     "slug": "AcademicSchedule",
+    "description": "Agenda Académica para el programa de Ingeniería de Sistemas de la UdeM",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#0000"
     },
+    "primaryColor": "#fff",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.ocms.academicSchedule"
+    },
+    "ios": {
+      "bundleIdentifier": "com.ocms.academicSchedule"
+    },
+    "githubUrl": "https://github.com/anamariasosam/ocms_app",
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#fff"
     }
   }
 }
