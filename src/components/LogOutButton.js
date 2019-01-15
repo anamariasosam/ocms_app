@@ -21,7 +21,7 @@ const LogOutButton = ({ location, history }) => {
     return (
       <Right style={{ flex: 0 }}>
         <Button transparent onPress={() => logOut(history)}>
-          <Icon name="md-log-out" style={{ color: '#16343B' }} />
+          <Icon name="md-log-out" style={{ color: '#fafafa' }} />
         </Button>
       </Right>
     )
