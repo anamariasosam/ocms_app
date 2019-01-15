@@ -30,7 +30,6 @@ class UserDetail extends Component {
 
   render() {
     const { pathname } = this.props.location
-    console.log(pathname)
 
     const { username } = this.state
     const user = pathname !== '/login' ? username : ''

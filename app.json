@@ -19,13 +19,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.ocms.academicSchedule"
     },
     "android": {
       "package": "com.ocms.academicSchedule"
-    },
-    "ios": {
-      "bundleIdentifier": "com.ocms.academicSchedule"
     },
     "githubUrl": "https://github.com/anamariasosam/ocms_app",
     "androidStatusBar": {

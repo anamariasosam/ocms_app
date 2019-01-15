@@ -62,7 +62,6 @@ export default class AgendaScreen extends Component {
         this.setState({
           userId,
           userType,
-          loading: false,
         })
       }
     } catch (error) {
@@ -72,6 +71,7 @@ export default class AgendaScreen extends Component {
 
   render() {
     const { loading, eventos, agenda } = this.state
+
     if (loading) {
       return <ActivityIndicator size="large" />
     }
